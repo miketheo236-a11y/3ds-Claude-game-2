@@ -1,0 +1,21 @@
+name: Build
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: devkitpro/devkitarm:latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          wget https://github.com/diasurgical/bannertool/releases/download/1.2.0/bannertool.zip
+          unzip -j bannertool.zip linux-x86_64/bannertool -d /opt/devkitpro/tools/bin
+          wget https://github.com/3DSGuy/Project_CTR/releases/download/makerom-v0.18/makerom-v0.18-ubuntu_x86_64.zip
+          unzip makerom-v0.18-ubuntu_x86_64.zip makerom -d /opt/devkitpro/tools/bin
+          chmod a+x /opt/devkitpro/tools/bin/makerom /opt/devkitpro/tools/bin/bannertool
+          make
+      - uses: actions/upload-artifact@v4
+        with:
+          name: whispering-woods
+          path: |
+            forest_adventure.cia
+            forest_adventure.3dsx
